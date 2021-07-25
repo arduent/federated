@@ -1,13 +1,13 @@
 package view;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Links;
 import model.NodeInfo;
 import model.NodeInfoPath;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.net.URL;
+
+
 
 public class NodeInfoReader {
 
@@ -21,16 +21,13 @@ public class NodeInfoReader {
             mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
             mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
-            URL url = new URL(dom + "/.well-known/nodeinfo");
-
-            String contents = Util.fetchUrl(url);
+            String contents = Util.fetchUrl(dom + "/.well-known/nodeinfo");
             NodeInfoPath nodeInfoPath = mapper.readValue(contents, NodeInfoPath.class);
             Links[] links = nodeInfoPath.getLinks();
             Links link = links[0];
             String href = link.getHref();
 
-            URL infoUrl = new URL(href);
-            String infoContents = Util.fetchUrl(infoUrl);
+            String infoContents = Util.fetchUrl(href);
             NodeInfo nodeInfo = mapper.readValue(infoContents, NodeInfo.class);
             String prettyInstance = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(nodeInfo);
             System.out.println(prettyInstance);

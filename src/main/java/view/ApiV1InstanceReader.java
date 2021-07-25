@@ -1,11 +1,9 @@
 package view;
 
+import model.Instance;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import model.Instance;
-
 import java.io.IOException;
-import java.net.URL;
 
 public class ApiV1InstanceReader {
 
@@ -19,9 +17,7 @@ public class ApiV1InstanceReader {
             mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
             mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
-            URL url = new URL(dom + "/api/v1/instance");
-
-            String contents = Util.fetchUrl(url);
+            String contents = Util.fetchUrl(dom + "/api/v1/instance");
 
             Instance instance = mapper.readValue(contents, Instance.class);
             String prettyInstance = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(instance);

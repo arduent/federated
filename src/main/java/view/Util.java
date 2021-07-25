@@ -1,26 +1,32 @@
 package view;
 
-import java.io.BufferedReader;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Util {
 
-    public static String fetchUrl(URL url) {
+    public static String fetchUrl(String url) {
 
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            List<String> contents = new ArrayList<>();
-            String line;
-            while ((line = in.readLine()) != null) {
-                contents.add(line);
-            }
-            in.close();
-            return String.join("\n", contents);
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Accept", "application/activity+json, application/ld+json, application/json")
+                    .build();
+
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.body();
+
         } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        } catch (InterruptedException e) {
             e.printStackTrace();
             System.exit(0);
         }
